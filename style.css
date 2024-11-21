@@ -1,0 +1,13 @@
+
+header h1 {
+    text-align: center;
+}
+
+main canvas {
+    display: block;
+    width:400px; 
+    height:400px;
+    margin: auto;
+    justify-content: center;
+    border: 2px solid black;
+}
