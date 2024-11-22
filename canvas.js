@@ -13,8 +13,8 @@ const WEST = 2;
 const EAST = 3;
 
 function get_wall_pos(direction) {
-    const x = player.x + (direction === EAST? player.width : 0);
-    const y = player.y + (direction === SOUTH? player.width : 0);
+    const x = frame.player.x + (direction === EAST? frame.player.width : 0);
+    const y = frame.player.y + (direction === SOUTH? frame.player.width : 0);
 
     switch (direction) {
         case NORTH:
@@ -34,29 +34,29 @@ function get_wall_pos(direction) {
 function get_wall_distance(direction, wall_pos) {
     switch(direction) {
         case NORTH:
-            return player.y - wall_pos - WALL_WIDTH + 1;
+            return frame.player.y - wall_pos - WALL_WIDTH + 1;
         case SOUTH:
-            return wall_pos - player.y - player.width + WALL_WIDTH;
+            return wall_pos - frame.player.y - frame.player.width + WALL_WIDTH;
         case WEST:
-            return player.x - wall_pos - WALL_WIDTH + 1;
+            return frame.player.x - wall_pos - WALL_WIDTH + 1;
         case EAST:
-            return wall_pos - player.x - player.width + WALL_WIDTH;
+            return wall_pos - frame.player.x - frame.player.width + WALL_WIDTH;
         default:
             console.log(`ERROR: Invalid direction ${direction}`);
             return -1;
     }
 }
 
-function move_player(direction, distance = player.move) {
+function move_player(direction, distance = frame.player.move) {
     switch(direction) {
         case NORTH:
-            return player.up(distance);
+            return frame.player.up(distance);
         case SOUTH:
-            return player.down(distance);
+            return frame.player.down(distance);
         case WEST:
-            return player.left(distance);
+            return frame.player.left(distance);
         case EAST:
-            return player.right(distance);
+            return frame.player.right(distance);
         default: 
             console.log("ERROR: Invalid direction");
             return -1;
@@ -65,16 +65,16 @@ function move_player(direction, distance = player.move) {
 
 function move(direction) {
     frame.clear_player();
-    const cell1 = frame.get_cell(player.x, player.y);
-    let x2 = player.x;
+    const cell1 = frame.get_cell(frame.player.x, frame.player.y);
+    let x2 = frame.player.x;
     let side1_direction = -1;
     if (direction === NORTH || direction === SOUTH) {
-        x2 += player.width;
+        x2 += frame.player.width;
         side1_direction = WEST;
     }
-    let y2 = player.y;
+    let y2 = frame.player.y;
     if (direction === WEST || direction === EAST) {
-        y2 += player.width;
+        y2 += frame.player.width;
         side1_direction = NORTH;
     }
     const cell2 = frame.get_cell(x2, y2);
@@ -84,23 +84,23 @@ function move(direction) {
         const wall = get_wall_pos(direction);
         console.log(`wall = ${wall}, direction ${direction}`);
 
-        const player_pos = (direction === NORTH || direction === SOUTH)? player.y : player.x;
-        console.log(`player_pos = ${player_pos}`);
+        const player_pos = (direction === NORTH || direction === SOUTH)? frame.player.y : frame.player.x;
+        console.log(`frame.player_pos = ${frame.player_pos}`);
 
         // figure out if player's move would "break" the wall
         let collision = false;
         switch (direction) {
             case NORTH:
-                collision = (player.y - player.move <= wall);
+                collision = (frame.player.y - frame.player.move <= wall);
                 break;
             case SOUTH:
-                collision = (player.y + player.width + player.move >= wall);
+                collision = (frame.player.y + frame.player.width + frame.player.move >= wall);
                 break;
             case WEST:
-                collision = (player.x - player.move <= wall);
+                collision = (frame.player.x - frame.player.move <= wall);
                 break;
             case EAST:
-                collision = (player.x + player.width + player.move >= wall);
+                collision = (frame.player.x + frame.player.width + frame.player.move >= wall);
                 break;
         }
         if (collision) {
