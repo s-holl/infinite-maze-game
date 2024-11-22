@@ -1,5 +1,5 @@
 
-header h1, h2 {
+header h1, h2, footer {
     text-align: center;
     font-family: "DejaVu Serif", "Times New Roman", Times, serif;
 }
@@ -7,6 +7,16 @@ header h1, h2 {
 header h1 {
     font-weight: bold;
     font-size: 36px;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
 }
 
 main h2 {
@@ -30,4 +40,11 @@ main canvas {
     margin: auto;
     justify-content: center;
     border: 2px solid black;
+}
+
+footer {
+    margin-top: auto;
+    vertical-align: bottom;
+    padding-bottom: 5px;
+    font-size: 14px;
 }
