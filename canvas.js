@@ -106,13 +106,15 @@ function move(direction) {
         if (collision) {
             console.log("Collision detected");
             move_player(direction, get_wall_distance(direction, wall));
+            frame.render_end();
+            frame.render_player();
             return;
         }
     }
     move_player(direction);
+    frame.render_end();
+    frame.render_player();
 }
-
-frame.generate_maze();
 
 window.addEventListener('keydown', function(event) {
     switch(event.key) {
@@ -129,7 +131,6 @@ window.addEventListener('keydown', function(event) {
         }
         case "ArrowRight": {
             move(EAST);
-            break;
             break;
         }
         default:

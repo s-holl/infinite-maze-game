@@ -152,12 +152,17 @@ class Player {
 class Frame {
     constructor(board) {
         this.drawing = board.getContext("2d");
+        this.board = board
+        this.reset_frame(board);
+    }
+
+    reset_frame() {
         this.drawing.scale(dpr, dpr);
         this.drawing.fillStyle = "white";
-        this.drawing.fillRect(0, 0, board.width, board.height);
-        this.maze = new Maze(board);
+        this.drawing.fillRect(0, 0, this.board.width, this.board.height);
+        this.maze = new Maze(this.board);
         this.player = new Player(WALL_WIDTH / 2, WALL_WIDTH / 2);
-        // this.generate_maze();
+        this.generate_maze();
         this.render_player();
     }
 
@@ -186,25 +191,30 @@ class Frame {
                 var south = north + CELL_SIZE;
                 this.drawing.lineWidth = WALL_WIDTH;
                 const half_wall = WALL_WIDTH / 2;
+                
                 if (this.maze.cells[x][y].wall[NORTH]) {
+                    this.drawing.beginPath();
                     this.drawing.strokeStyle = 'black';
                     this.drawing.moveTo(west - half_wall, north);
                     this.drawing.lineTo(east + half_wall, north);
                     this.drawing.stroke();
                 }
                 if (this.maze.cells[x][y].wall[SOUTH]) {
+                    this.drawing.beginPath();
                     this.drawing.strokeStyle = 'black';
                     this.drawing.moveTo(west - half_wall, south);
                     this.drawing.lineTo(east + half_wall, south);
                     this.drawing.stroke();
                 }
                 if (this.maze.cells[x][y].wall[EAST]) {
+                    this.drawing.beginPath();
                     this.drawing.strokeStyle = 'black';
                     this.drawing.moveTo(east, north - half_wall);
                     this.drawing.lineTo(east, south + half_wall);
                     this.drawing.stroke();
                 }
                 if (this.maze.cells[x][y].wall[WEST]) {
+                    this.drawing.beginPath();
                     this.drawing.strokeStyle = 'black';
                     this.drawing.moveTo(west, north - half_wall);
                     this.drawing.lineTo(west, south + half_wall);
@@ -212,6 +222,7 @@ class Frame {
                 }
             }
         }
+        this.render_end();
     }
 
     clear_player() {
@@ -224,7 +235,13 @@ class Frame {
         console.log("Rendering player");
         let player = this.player;
         this.drawing.fillStyle = player.color; // arbitrary
+        const end_x = this.maze.cells.length - 1
+        const end_y = this.maze.cells[0].length - 1;
         this.drawing.fillRect(player.x, player.y, player.width, player.height);
+        if (player.x === get_west_x(end_x) + WALL_WIDTH/2 && player.y === get_north_y(end_y) + WALL_WIDTH/2) {
+            const board = this.board;
+            this.reset_frame(board);
+        }
     }
 
     get_cell(pos_x, pos_y) {
@@ -233,6 +250,21 @@ class Frame {
         return this.maze.cells[cell_x][cell_y];
     }
     
+    render_end() {
+        console.log("Rendering end square");
+        const end_x = this.maze.cells.length - 1
+        const end_y = this.maze.cells[0].length - 1;
+        this.drawing.fillStyle = 'red';
+        const size = CELL_SIZE / 2.5;
+        this.drawing.globalCompositeOperation = "destination-over";
+        this.drawing.fillRect(get_west_x(end_x) + WALL_WIDTH/2, get_north_y(end_y) + WALL_WIDTH/2, size, size);
+        this.drawing.fillRect(get_east_x(end_x) - size, get_south_y(end_y) - size, size, size);
+        this.drawing.fillRect(get_west_x(end_x) + WALL_WIDTH/2, get_south_y(end_y) - size, size, size);
+        this.drawing.fillRect(get_east_x(end_x) - size, get_north_y(end_y) + WALL_WIDTH/2, size, size);
+        this.drawing.globalCompositeOperation = "source-over";
+        this.drawing.fillStyle = 'white';
+        this.drawing.fillRect(get_west_x(end_x) + size/2, get_north_y(end_y) + size/2, CELL_SIZE - size, CELL_SIZE - size);
+    }
 
 }
 
